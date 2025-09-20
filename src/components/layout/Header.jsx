@@ -1,9 +1,21 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { ROUTES } from '../../constants/routes';
+import { Button } from '../ui/button';
+import { Avatar, AvatarFallback } from '../ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
+import { User, Settings, LogOut, MessageSquare, LayoutDashboard, FileText, Plus, Sun, Moon } from 'lucide-react';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -12,92 +24,118 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-8">
-            <Link to={isAuthenticated ? ROUTES.DASHBOARD : ROUTES.HOME} className="flex items-center">
-              <span className="text-2xl font-bold text-blue-600">카카오톡 AI 템플릿</span>
-            </Link>
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+      <div className="flex h-14 items-center justify-between px-6">
+        <div className="flex items-center space-x-6">
+          <Link
+            to={isAuthenticated ? ROUTES.DASHBOARD : ROUTES.HOME}
+            className="flex items-center space-x-2 transition-opacity hover:opacity-80"
+          >
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500">
+              <MessageSquare className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-lg font-semibold text-foreground">TalkTemplate</span>
+          </Link>
 
-            {isAuthenticated && (
-              <nav className="hidden md:flex space-x-6">
-                <Link
-                  to={ROUTES.DASHBOARD}
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-                >
-                  대시보드
+          {isAuthenticated && (
+            <nav className="hidden md:flex items-center space-x-1">
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent" asChild>
+                <Link to={ROUTES.DASHBOARD} className="flex items-center space-x-2">
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span>대시보드</span>
                 </Link>
-                <Link
-                  to={ROUTES.CHAT}
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-                >
-                  템플릿 생성
+              </Button>
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent" asChild>
+                <Link to={ROUTES.TEMPLATES} className="flex items-center space-x-2">
+                  <FileText className="h-4 w-4" />
+                  <span>템플릿 관리</span>
                 </Link>
-                <Link
-                  to={ROUTES.TEMPLATES}
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-                >
-                  템플릿 관리
-                </Link>
-              </nav>
-            )}
-          </div>
+              </Button>
+            </nav>
+          )}
+        </div>
 
-          <div className="flex items-center space-x-4">
-            {isAuthenticated ? (
-              <div className="flex items-center space-x-4">
-                <span className="text-sm text-gray-700">
-                  안녕하세요, {user?.name}님
-                </span>
-                <div className="relative group">
-                  <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <span className="text-blue-600 font-medium text-sm">
-                        {user?.name?.charAt(0)}
-                      </span>
-                    </div>
-                  </button>
-
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <Link
-                      to={ROUTES.PROFILE}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      프로필
-                    </Link>
-                    <Link
-                      to={ROUTES.SETTINGS}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      설정
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      로그아웃
-                    </button>
-                  </div>
-                </div>
-              </div>
+        <div className="flex items-center space-x-3">
+          {/* 테마 토글 버튼 */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleTheme}
+            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-accent"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-4 w-4" />
             ) : (
-              <div className="flex items-center space-x-4">
-                <Link
-                  to={ROUTES.LOGIN}
-                  className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-                >
-                  로그인
-                </Link>
-                <Link
-                  to={ROUTES.REGISTER}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                >
-                  회원가입
-                </Link>
-              </div>
+              <Moon className="h-4 w-4" />
             )}
-          </div>
+          </Button>
+
+          {isAuthenticated ? (
+            <div className="flex items-center space-x-3">
+              <Button
+                size="sm"
+                className="bg-orange-500 hover:bg-orange-600 text-white border-0"
+                asChild
+              >
+                <Link to={ROUTES.CHAT} className="flex items-center space-x-2">
+                  <Plus className="h-4 w-4" />
+                  <span>새 대화</span>
+                </Link>
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-accent">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-muted text-muted-foreground text-sm">
+                        {user?.name?.charAt(0) || 'U'}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex items-center justify-start gap-2 p-2">
+                    <div className="flex flex-col space-y-1 leading-none">
+                      <p className="font-medium text-sm">{user?.name}</p>
+                      <p className="w-[200px] truncate text-xs text-muted-foreground">
+                        {user?.email}
+                      </p>
+                    </div>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to={ROUTES.PROFILE} className="flex items-center space-x-2 text-sm">
+                      <User className="h-4 w-4" />
+                      <span>프로필</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to={ROUTES.SETTINGS} className="flex items-center space-x-2 text-sm">
+                      <Settings className="h-4 w-4" />
+                      <span>설정</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="flex items-center space-x-2 text-sm text-red-600 focus:text-red-600"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>로그아웃</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          ) : (
+            <div className="flex items-center space-x-2">
+              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent">
+                <Link to={ROUTES.LOGIN}>로그인</Link>
+              </Button>
+              <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white">
+                <Link to={ROUTES.REGISTER}>시작하기</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </header>
