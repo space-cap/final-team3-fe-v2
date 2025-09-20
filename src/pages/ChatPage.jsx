@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -28,6 +28,9 @@ import {
   Settings,
   ChevronRight,
   MoreHorizontal,
+  Menu,
+  X,
+  MessageCircle,
 } from 'lucide-react';
 
 const ChatPage = () => {
@@ -51,6 +54,21 @@ const ChatPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [editingConvId, setEditingConvId] = useState(null);
   const [editTitle, setEditTitle] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 768);
+
+  // 화면 크기 변경 감지 - 크기 변경시에는 강제로 상태 변경하지 않음
+  useEffect(() => {
+    const handleResize = () => {
+      // 창 크기가 변경되어도 사용자가 설정한 상태를 유지
+      // 다만 모바일에서 사이드바가 열려있을 때는 자동으로 닫아줌
+      if (window.innerWidth < 768 && sidebarOpen) {
+        setSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [sidebarOpen]);
 
   const handleSendMessage = () => {
     if (!input.trim()) return;
@@ -149,11 +167,88 @@ const ChatPage = () => {
   );
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Claude.ai 스타일 사이드바 */}
-      <div className={`w-80 flex flex-col border-r border-border ${
-        isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-card text-card-foreground'
-      }`}>
+    <div className="flex h-screen bg-background relative">
+      {/* 모바일 오버레이 */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* 닫힌 상태 사이드바 (아이콘만) */}
+      {!sidebarOpen && (
+        <div className={`w-16 flex flex-col border-r border-border ${
+          isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-card text-card-foreground'
+        }`}>
+          <div className="p-4 border-b border-border">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSidebarOpen(true)}
+              title="사이드바 열기"
+              className={`h-8 w-8 p-0 rounded-lg transition-all duration-200 ${
+                isDark
+                  ? 'text-zinc-400 hover:text-orange-400 hover:bg-zinc-800/80 hover:scale-110'
+                  : 'text-muted-foreground hover:text-orange-500 hover:bg-orange-50 hover:scale-110'
+              }`}
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="flex-1 flex flex-col items-center py-4 space-y-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={newConversation}
+              title="새 채팅"
+              className={`h-10 w-10 p-0 rounded-lg transition-all duration-200 ${
+                isDark
+                  ? 'text-zinc-400 hover:text-orange-400 hover:bg-zinc-800/80 hover:scale-105'
+                  : 'text-muted-foreground hover:text-orange-500 hover:bg-orange-50 hover:scale-105'
+              }`}
+            >
+              <MessageCircle className="h-5 w-5" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              title="채팅 목록"
+              className={`h-10 w-10 p-0 rounded-lg transition-all duration-200 ${
+                isDark
+                  ? 'text-zinc-400 hover:text-orange-400 hover:bg-zinc-800/80 hover:scale-105'
+                  : 'text-muted-foreground hover:text-orange-500 hover:bg-orange-50 hover:scale-105'
+              }`}
+            >
+              <MessageSquare className="h-5 w-5" />
+            </Button>
+          </div>
+          <div className="p-4 border-t border-border">
+            <Button
+              variant="ghost"
+              size="sm"
+              title="설정"
+              className={`h-8 w-8 p-0 rounded-lg transition-all duration-200 ${
+                isDark
+                  ? 'text-zinc-400 hover:text-orange-400 hover:bg-zinc-800/80 hover:scale-110'
+                  : 'text-muted-foreground hover:text-orange-500 hover:bg-orange-50 hover:scale-110'
+              }`}
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* 열린 상태 사이드바 */}
+      {sidebarOpen && (
+        <div className={`
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          fixed md:relative inset-y-0 left-0 z-50 md:z-auto
+          w-80 flex flex-col border-r border-border
+          transition-transform duration-300 ease-in-out
+          ${isDark ? 'bg-zinc-950 text-zinc-100' : 'bg-card text-card-foreground'}
+        `}>
         {/* 상단 헤더 */}
         <div className="p-4 border-b border-border">
           <div className="flex items-center justify-between mb-4">
@@ -166,22 +261,24 @@ const ChatPage = () => {
             <Button
               variant="ghost"
               size="sm"
-              className={`h-8 w-8 p-0 ${
+              onClick={() => setSidebarOpen(false)}
+              title="사이드바 닫기"
+              className={`h-8 w-8 p-0 rounded-lg transition-all duration-200 ${
                 isDark
-                  ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                  ? 'text-zinc-400 hover:text-orange-400 hover:bg-zinc-800/80 hover:scale-110'
+                  : 'text-muted-foreground hover:text-orange-500 hover:bg-orange-50 hover:scale-110'
               }`}
             >
-              <Settings className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
 
           <Button
             onClick={newConversation}
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0 h-10"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0 h-10 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg"
             size="sm"
           >
-            <Plus className="h-4 w-4 mr-2" />
+            <MessageCircle className="h-4 w-4 mr-2" />
             새 템플릿 생성
           </Button>
         </div>
@@ -347,24 +444,11 @@ const ChatPage = () => {
             </Button>
           </div>
         </div>
-      </div>
+        </div>
+      )}
 
       {/* 메인 채팅 영역 */}
       <div className="flex-1 flex flex-col bg-background">
-        <div className="border-b border-border p-6 bg-background">
-          <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600">
-              <Sparkles className="h-6 w-6 text-white" />
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold text-zinc-900">AI 템플릿 어시스턴트</h2>
-              <p className="text-sm text-zinc-600">
-                카카오톡 알림톡 템플릿을 쉽고 빠르게 생성해보세요
-              </p>
-            </div>
-          </div>
-        </div>
-
         <ScrollArea className="flex-1 p-6">
           <div className="space-y-6 max-w-4xl mx-auto">
             {messages.map((message) => (

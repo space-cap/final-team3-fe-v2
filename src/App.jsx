@@ -26,7 +26,7 @@ const AppRoutes = () => {
         path={ROUTES.HOME}
         element={
           isAuthenticated ? (
-            <Navigate to={ROUTES.DASHBOARD} replace />
+            <Navigate to={ROUTES.CHAT} replace />
           ) : (
             <Layout>
               <LandingPage />
@@ -39,7 +39,7 @@ const AppRoutes = () => {
         path={ROUTES.LOGIN}
         element={
           isAuthenticated ? (
-            <Navigate to={ROUTES.DASHBOARD} replace />
+            <Navigate to={ROUTES.CHAT} replace />
           ) : (
             <Layout showHeader={false}>
               <LoginPage />
@@ -52,7 +52,7 @@ const AppRoutes = () => {
         path={ROUTES.REGISTER}
         element={
           isAuthenticated ? (
-            <Navigate to={ROUTES.DASHBOARD} replace />
+            <Navigate to={ROUTES.CHAT} replace />
           ) : (
             <Layout showHeader={false}>
               <RegisterPage />
@@ -66,9 +66,7 @@ const AppRoutes = () => {
         path={ROUTES.DASHBOARD}
         element={
           <ProtectedRoute>
-            <Layout>
-              <DashboardPage />
-            </Layout>
+            <Navigate to={ROUTES.CHAT} replace />
           </ProtectedRoute>
         }
       />

@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { User, Settings, LogOut, MessageSquare, LayoutDashboard, FileText, Plus, Sun, Moon } from 'lucide-react';
+import { User, Settings, LogOut, MessageSquare, FileText, Plus, Sun, Moon } from 'lucide-react';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
@@ -28,7 +28,7 @@ const Header = () => {
       <div className="flex h-14 items-center justify-between px-6">
         <div className="flex items-center space-x-6">
           <Link
-            to={isAuthenticated ? ROUTES.DASHBOARD : ROUTES.HOME}
+            to={isAuthenticated ? ROUTES.CHAT : ROUTES.HOME}
             className="flex items-center space-x-2 transition-opacity hover:opacity-80"
           >
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-orange-500">
@@ -39,12 +39,6 @@ const Header = () => {
 
           {isAuthenticated && (
             <nav className="hidden md:flex items-center space-x-1">
-              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent" asChild>
-                <Link to={ROUTES.DASHBOARD} className="flex items-center space-x-2">
-                  <LayoutDashboard className="h-4 w-4" />
-                  <span>대시보드</span>
-                </Link>
-              </Button>
               <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground hover:bg-accent" asChild>
                 <Link to={ROUTES.TEMPLATES} className="flex items-center space-x-2">
                   <FileText className="h-4 w-4" />
