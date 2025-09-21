@@ -26,7 +26,7 @@ const LoginPage = () => {
     const result = await login(email, password);
 
     if (result.success) {
-      navigate(ROUTES.DASHBOARD);
+      navigate(ROUTES.CHAT);
     } else {
       setError(result.error || '로그인에 실패했습니다.');
     }
@@ -96,6 +96,7 @@ const LoginPage = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       required
+                      autoComplete="email"
                       className="pl-10"
                     />
                   </div>
@@ -111,6 +112,7 @@ const LoginPage = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
+                      autoComplete="current-password"
                       className="pl-10"
                     />
                   </div>

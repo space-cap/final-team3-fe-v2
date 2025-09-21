@@ -223,6 +223,7 @@ const RegisterPage = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
+                        autoComplete="email"
                         className="pl-10"
                       />
                     </div>
@@ -254,6 +255,7 @@ const RegisterPage = () => {
                     value={formData.verificationCode}
                     onChange={handleChange}
                     required
+                    autoComplete="one-time-code"
                   />
                 </div>
 
@@ -269,6 +271,7 @@ const RegisterPage = () => {
                       value={formData.name}
                       onChange={handleChange}
                       required
+                      autoComplete="name"
                       className="pl-10"
                     />
                   </div>
@@ -285,6 +288,7 @@ const RegisterPage = () => {
                       value={formData.password}
                       onChange={handleChange}
                       required
+                      autoComplete="new-password"
                       className="pl-10"
                     />
                   </div>
@@ -301,6 +305,7 @@ const RegisterPage = () => {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                       required
+                      autoComplete="new-password"
                       className="pl-10"
                     />
                   </div>

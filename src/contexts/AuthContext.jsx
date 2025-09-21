@@ -26,20 +26,41 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      // TODO: Replace with actual API call
-      const mockUser = {
-        id: 1,
-        email,
-        name: '사용자'
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { success: false, error: data.message || '로그인에 실패했습니다.' };
+      }
+
+      // If login is successful, store user data and token
+      const user = {
+        id: data.user?.id || data.id || 1,
+        email: data.user?.email || email,
+        name: data.user?.name || data.name || '사용자'
       };
 
-      localStorage.setItem('token', 'mock-token');
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      setUser(mockUser);
+      // Store token if provided
+      if (data.token || data.accessToken) {
+        localStorage.setItem('token', data.token || data.accessToken);
+      }
+
+      localStorage.setItem('user', JSON.stringify(user));
+      setUser(user);
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: '네트워크 오류가 발생했습니다.' };
     }
   };
 
