@@ -20,6 +20,7 @@ const RegisterPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [emailSent, setEmailSent] = useState(false);
+  const [emailVerificationToken, setEmailVerificationToken] = useState('');
 
   const { register } = useAuth();
   const navigate = useNavigate();
@@ -37,9 +38,91 @@ const RegisterPage = () => {
       return;
     }
 
-    // TODO: Implement actual email verification
-    setEmailSent(true);
+    setLoading(true);
     setError('');
+
+    try {
+      const response = await fetch('/api/auth/email/otp/request', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: formData.email })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setEmailSent(true);
+        setError('');
+      } else {
+        setError(data.message || '인증번호 전송에 실패했습니다.');
+      }
+    } catch (error) {
+      setError('네트워크 오류가 발생했습니다.');
+      console.error('OTP request error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOTP = async () => {
+    if (!formData.verificationCode) {
+      setError('인증번호를 입력해주세요.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/auth/email/otp/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          code: formData.verificationCode
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.data && data.data.verificationToken) {
+          setEmailVerificationToken(data.data.verificationToken);
+          setError('');
+          // OTP 검증 성공 시 회원가입 진행
+          await handleSignUp(data.data.verificationToken);
+        } else {
+          setError('인증 토큰을 받지 못했습니다.');
+        }
+      } else {
+        setError(data.message || '인증번호가 올바르지 않습니다.');
+      }
+    } catch (error) {
+      setError('네트워크 오류가 발생했습니다.');
+      console.error('OTP verify error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async (verificationToken) => {
+    const result = await register(
+      formData.email,
+      formData.password,
+      formData.name,
+      formData.verificationCode,
+      verificationToken
+    );
+
+    if (result.success) {
+      navigate(ROUTES.CHAT);
+    } else {
+      setError(result.error || '회원가입에 실패했습니다.');
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -59,20 +142,8 @@ const RegisterPage = () => {
       return;
     }
 
-    const result = await register(
-      formData.email,
-      formData.password,
-      formData.name,
-      formData.verificationCode
-    );
-
-    if (result.success) {
-      navigate(ROUTES.DASHBOARD);
-    } else {
-      setError(result.error || '회원가입에 실패했습니다.');
-    }
-
-    setLoading(false);
+    // OTP 검증부터 시작
+    await handleVerifyOTP();
   };
 
   return (

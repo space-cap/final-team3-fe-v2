@@ -43,22 +43,46 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (email, password, name, verificationCode) => {
+  const register = async (email, password, name, verificationCode, emailVerificationToken) => {
     try {
-      // TODO: Replace with actual API call
-      const mockUser = {
-        id: 1,
+      // Sign up with email verification token
+      const signupResponse = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+          name,
+          emailVerificationToken
+        })
+      });
+
+      const signupData = await signupResponse.json();
+
+      if (!signupResponse.ok) {
+        return { success: false, error: signupData.message || '회원가입에 실패했습니다.' };
+      }
+
+      // If signup is successful, store user data
+      const user = {
+        id: signupData.id || 1,
         email,
         name
       };
 
-      localStorage.setItem('token', 'mock-token');
-      localStorage.setItem('user', JSON.stringify(mockUser));
-      setUser(mockUser);
+      // Store token if provided
+      if (signupData.token) {
+        localStorage.setItem('token', signupData.token);
+      }
+
+      localStorage.setItem('user', JSON.stringify(user));
+      setUser(user);
 
       return { success: true };
     } catch (error) {
-      return { success: false, error: error.message };
+      return { success: false, error: '네트워크 오류가 발생했습니다.' };
     }
   };
 
