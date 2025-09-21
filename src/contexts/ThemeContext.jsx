@@ -11,22 +11,12 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState(() => {
-    // 로컬 스토리지에서 저장된 테마 불러오기
-    const savedTheme = localStorage.getItem('theme');
-    return savedTheme || 'light';
-  });
+  const [theme, setTheme] = useState('light');
 
   useEffect(() => {
-    // 테마 변경 시 localStorage와 document에 적용
-    localStorage.setItem('theme', theme);
-
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [theme]);
+    // 항상 라이트 모드로 고정
+    document.documentElement.classList.remove('dark');
+  }, []);
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
