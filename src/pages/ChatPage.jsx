@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -31,10 +32,13 @@ import {
   Menu,
   X,
   MessageCircle,
+  LogOut,
+  UserCircle,
 } from 'lucide-react';
 
 const ChatPage = () => {
   const { isDark } = useTheme();
+  const { user, logout } = useAuth();
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -223,7 +227,7 @@ const ChatPage = () => {
               <MessageSquare className="h-5 w-5" />
             </Button>
           </div>
-          <div className="p-4 border-t border-border">
+          <div className="p-4 border-t border-border space-y-3">
             <Button
               variant="ghost"
               size="sm"
@@ -236,6 +240,28 @@ const ChatPage = () => {
             >
               <Settings className="h-4 w-4" />
             </Button>
+
+            {/* 사용자 프로필 */}
+            <div className="flex flex-col items-center space-y-2">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
+                isDark ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-700'
+              }`}>
+                {user?.name?.charAt(0) || 'U'}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={logout}
+                title="로그아웃"
+                className={`h-8 w-8 p-0 rounded-lg transition-all duration-200 ${
+                  isDark
+                    ? 'text-zinc-400 hover:text-red-400 hover:bg-zinc-800/80 hover:scale-110'
+                    : 'text-muted-foreground hover:text-red-500 hover:bg-red-50 hover:scale-110'
+                }`}
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
       )}
@@ -419,29 +445,68 @@ const ChatPage = () => {
 
         {/* 하단 메뉴 */}
         <div className="p-4 border-t border-border">
-          <div className="space-y-1">
-            <Button
-              variant="ghost"
-              className={`w-full justify-start h-9 ${
-                isDark
-                  ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-              }`}
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              템플릿 관리
-            </Button>
-            <Button
-              variant="ghost"
-              className={`w-full justify-start h-9 ${
-                isDark
-                  ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
-              }`}
-            >
-              <Settings className="h-4 w-4 mr-2" />
-              설정
-            </Button>
+          <div className="space-y-3">
+            {/* 메뉴 버튼들 */}
+            <div className="space-y-1">
+              <Button
+                variant="ghost"
+                className={`w-full justify-start h-9 transition-all duration-200 ${
+                  isDark
+                    ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 hover:scale-[1.02]'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50 hover:scale-[1.02]'
+                }`}
+              >
+                <FileText className="h-4 w-4 mr-2" />
+                템플릿 관리
+              </Button>
+              <Button
+                variant="ghost"
+                className={`w-full justify-start h-9 transition-all duration-200 ${
+                  isDark
+                    ? 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 hover:scale-[1.02]'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50 hover:scale-[1.02]'
+                }`}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                설정
+              </Button>
+            </div>
+
+            {/* 사용자 프로필 섹션 */}
+            <div className={`flex items-center gap-3 p-3 rounded-lg ${
+              isDark ? 'bg-zinc-900/50' : 'bg-orange-50/50'
+            }`}>
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
+                isDark ? 'bg-orange-500 text-white' : 'bg-orange-500 text-white'
+              }`}>
+                {user?.name?.charAt(0) || 'U'}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className={`text-sm font-medium truncate ${
+                  isDark ? 'text-zinc-100' : 'text-zinc-900'
+                }`}>
+                  {user?.name || '사용자'}
+                </div>
+                <div className={`text-xs truncate ${
+                  isDark ? 'text-zinc-400' : 'text-zinc-600'
+                }`}>
+                  {user?.email || 'user@example.com'}
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={logout}
+                title="로그아웃"
+                className={`h-8 w-8 p-0 rounded-lg transition-all duration-200 ${
+                  isDark
+                    ? 'text-zinc-400 hover:text-red-400 hover:bg-zinc-800 hover:scale-110'
+                    : 'text-muted-foreground hover:text-red-500 hover:bg-red-100 hover:scale-110'
+                }`}
+              >
+                <LogOut className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
         </div>
         </div>
