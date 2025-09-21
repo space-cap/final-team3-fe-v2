@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { API_ENDPOINTS, getApiUrl } from '../lib/api';
 
 const AuthContext = createContext();
 
@@ -26,7 +27,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(getApiUrl(API_ENDPOINTS.LOGIN), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,7 +68,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (email, password, name, verificationCode, emailVerificationToken) => {
     try {
       // Sign up with email verification token
-      const signupResponse = await fetch('/api/auth/signup', {
+      const signupResponse = await fetch(getApiUrl(API_ENDPOINTS.SIGNUP), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

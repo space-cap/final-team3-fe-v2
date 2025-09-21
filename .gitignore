@@ -23,8 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment variables
-.env
+# Environment variables (keep .env.development and .env.production for sharing)
 .env.local
 .env.development.local
 .env.test.local

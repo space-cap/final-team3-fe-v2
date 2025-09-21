@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { useTheme } from '../../contexts/ThemeContext';
 import { ROUTES } from '../../constants/routes';
 import { Button } from '../ui/button';
 import { Avatar, AvatarFallback } from '../ui/avatar';
@@ -11,11 +10,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
-import { User, Settings, LogOut, MessageSquare, FileText, Plus, Sun, Moon } from 'lucide-react';
+import { User, Settings, LogOut, MessageSquare, FileText, Plus } from 'lucide-react';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -50,20 +48,6 @@ const Header = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          {/* 테마 토글 버튼 */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={toggleTheme}
-            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground hover:bg-accent"
-          >
-            {theme === 'dark' ? (
-              <Sun className="h-4 w-4" />
-            ) : (
-              <Moon className="h-4 w-4" />
-            )}
-          </Button>
-
           {isAuthenticated ? (
             <div className="flex items-center space-x-3">
               <Button

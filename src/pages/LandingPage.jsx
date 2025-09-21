@@ -58,7 +58,7 @@ const LandingPage = () => {
 
             {/* 서브타이틀 */}
             <p className="text-xl md:text-2xl text-slate-600 max-w-3xl mx-auto leading-relaxed mb-12">
-              <span className="font-semibold text-orange-600">99.8% 승인률</span>을 자랑하는 AI가
+              <span className="font-semibold text-orange-600">90.8% 승인률</span>을 자랑하는 AI가
               <br className="hidden sm:block" />
               당신의 비즈니스에 맞는 완벽한 템플릿을 즉시 생성합니다
             </p>
@@ -107,7 +107,7 @@ const LandingPage = () => {
                     <TrendingUp className="w-8 h-8 text-green-600" />
                   </div>
                 </div>
-                <div className="text-3xl font-bold text-slate-900 mb-1">99.8%</div>
+                <div className="text-3xl font-bold text-slate-900 mb-1">90.8%</div>
                 <div className="text-slate-600">템플릿 승인율</div>
               </div>
 
@@ -156,7 +156,7 @@ const LandingPage = () => {
             </h2>
             <p className="text-xl text-slate-600 leading-relaxed max-w-2xl mx-auto">
               소상공인과 마케터를 위한 가장 스마트한 카카오톡 알림톡 솔루션으로<br />
-              <span className="font-semibold text-orange-600">99.8% 승인률</span>을 경험해보세요
+              <span className="font-semibold text-orange-600">90.8% 승인률</span>을 경험해보세요
             </p>
           </div>
 

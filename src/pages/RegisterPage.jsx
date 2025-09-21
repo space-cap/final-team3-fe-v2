@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { ROUTES } from '../constants/routes';
+import { API_ENDPOINTS, getApiUrl } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -42,7 +43,7 @@ const RegisterPage = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/email/otp/request', {
+      const response = await fetch(getApiUrl(API_ENDPOINTS.EMAIL_OTP_REQUEST), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,7 +77,7 @@ const RegisterPage = () => {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/email/otp/verify', {
+      const response = await fetch(getApiUrl(API_ENDPOINTS.EMAIL_OTP_VERIFY), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
